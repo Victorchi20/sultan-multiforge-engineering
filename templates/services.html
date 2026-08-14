@@ -1,0 +1,796 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services — {% if site_settings and site_settings.company_name %}{{ site_settings.company_name }}{% else %}Sultan Multiforge Engineering Ltd{% endif %}</title>
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+#services-intro { background: var(--navy); }
+#services-detail { background: var(--navy-dark); }
+#process { background: var(--navy); }
+
+/* PAINTING GALLERY */
+.painting-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.paint-card {
+  border-radius: var(--radius); overflow: hidden;
+  position: relative; background: var(--charcoal);
+  border: 1px solid var(--border);
+  min-height: 240px;
+  transition: transform var(--transition), border-color var(--transition);
+}
+.paint-card:hover { transform: scale(1.02); border-color: var(--border-gold); }
+.paint-card img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  min-height: 240px;
+}
+.paint-card-featured {
+  grid-row: span 2;
+  min-height: 500px;
+}
+.paint-card-featured img { min-height: 500px; }
+.paint-fallback {
+  display: none; align-items: center; justify-content: center;
+  width: 100%; height: 100%; min-height: 240px;
+  background: var(--charcoal-lt); color: var(--gold); font-size: 2.5rem; opacity: .3;
+}
+.paint-overlay {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(6,15,28,.9));
+  padding: 2rem 1.25rem 1.25rem;
+  opacity: 0; transition: opacity var(--transition);
+}
+.paint-card:hover .paint-overlay { opacity: 1; }
+.paint-tag {
+  display: inline-block; background: var(--gold); color: var(--navy-dark);
+  padding: .18rem .65rem; border-radius: 20px;
+  font-size: .63rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: .4rem;
+}
+.paint-caption {
+  font-size: .85rem; color: var(--white); margin: .25rem 0 .4rem; font-weight: 500;
+}
+.paint-brand {
+  font-size: .72rem; color: var(--gold); letter-spacing: 1px;
+  display: flex; align-items: center; gap: .35rem;
+}
+
+@media(max-width:700px) {
+  .painting-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+  }
+  .paint-card-featured { grid-row: span 1 !important; min-height: 260px !important; }
+  .paint-card-featured img { min-height: 260px !important; }
+  #deco-services-grid { grid-template-columns: 1fr !important; }
+}
+#services-cta {
+  background: linear-gradient(135deg, var(--navy) 0%, #0d1f38 100%);
+  border-top: 1px solid var(--border);
+  padding: 7rem 5%; text-align: center; position: relative; overflow: hidden;
+}
+#services-cta::before {
+  content:''; position:absolute; inset:0;
+  background-image:linear-gradient(rgba(201,168,76,.03) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(201,168,76,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+
+/* ── OVERVIEW GRID ── */
+.services-overview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 3rem;
+  width: 100%;
+}
+.svc-overview-card {
+  flex: 1 1 280px;
+  max-width: 100%;
+  background: var(--charcoal); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2.25rem 2rem;
+  transition: all var(--transition); position: relative;
+  overflow: visible;
+  box-sizing: border-box;
+  word-wrap: break-word; overflow-wrap: break-word;
+}
+.svc-overview-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  background:linear-gradient(90deg,var(--gold),transparent);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform var(--transition);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.svc-overview-card:hover { transform: translateY(-6px); border-color: var(--border-gold); box-shadow: var(--shadow); }
+.svc-overview-card:hover::before { transform: scaleX(1); }
+.svc-icon {
+  width: 56px; height: 56px; border-radius: var(--radius);
+  background: var(--gold-dim); border: 1px solid var(--border-gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; color: var(--gold); margin-bottom: 1.25rem;
+  flex-shrink: 0;
+}
+.svc-overview-card h3 { margin-bottom: .65rem; font-size: 1.05rem; word-break: break-word; }
+.svc-overview-card p  { font-size: .87rem; color: var(--mid); line-height: 1.8; word-break: break-word; }
+
+@media(min-width: 993px) {
+  .svc-overview-card { flex: 1 1 calc(33.333% - 1.5rem); }
+}
+@media(min-width: 601px) and (max-width: 992px) {
+  .svc-overview-card { flex: 1 1 calc(50% - 1rem); }
+}
+@media(max-width: 600px) {
+  .services-overview-grid {
+    display: block !important;
+  }
+  .svc-overview-card {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 1rem;
+    flex: none !important;
+  }
+}
+
+/* ── SERVICE DETAIL BLOCKS ── */
+.service-detail-block {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4rem; align-items: center;
+  margin-bottom: 5rem; padding-bottom: 5rem;
+  border-bottom: 1px solid var(--border);
+}
+.service-detail-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.service-detail-block.reverse { direction: rtl; }
+.service-detail-block.reverse > * { direction: ltr; }
+.img-placeholder img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.svc-detail-img { height: 360px; border-radius: var(--radius); }
+.svc-detail-text p { font-size: .9rem; color: var(--mid); line-height: 1.9; margin-bottom: 1rem; }
+.svc-benefits { display: flex; flex-direction: column; gap: .6rem; margin: 1.25rem 0; padding-left: 0; list-style: none; }
+.svc-benefit,
+.svc-benefits li {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  font-size: .87rem;
+  color: var(--light);
+}
+.svc-benefit i,
+.svc-benefits li i {
+  color: var(--gold);
+  margin-top: 4px;
+  font-size: .8rem;
+  flex-shrink: 0;
+}
+@media(max-width: 992px) {
+  .service-detail-block,
+  .service-detail-block.reverse { grid-template-columns: 1fr !important; direction: ltr !important; gap: 2rem; }
+  .svc-detail-img { height: 250px !important; }
+}
+
+/* ── PROCESS STEPS ── */
+.process-steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2rem; margin-top: 3rem; position: relative;
+}
+.process-steps::before {
+  content:''; position:absolute; top:40px;
+  left:calc(12.5%); right:calc(12.5%);
+  height:1px; background:var(--border); z-index:0;
+}
+.process-step { text-align: center; position: relative; z-index: 1; padding: 0 1rem; }
+.step-circle {
+  width: 80px; height: 80px; border-radius: 50%;
+  border: 2px solid var(--border); background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem; transition: all var(--transition);
+}
+.step-circle:hover { border-color: var(--gold); background: var(--gold-dim); }
+.step-num { font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--gold); }
+.process-step h4 { margin-bottom: .5rem; font-size: .95rem; }
+.process-step p  { font-size: .82rem; color: var(--mid); line-height: 1.7; }
+@media(max-width: 992px) {
+  .process-steps { grid-template-columns: repeat(2, 1fr) !important; }
+  .process-steps::before { display: none; }
+}
+@media(max-width: 600px) {
+  .process-steps { grid-template-columns: 1fr 1fr !important; gap: 1.25rem !important; }
+  .step-circle { width: 60px !important; height: 60px !important; }
+  .step-num { font-size: 1.1rem !important; }
+}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-name">
+      {% if site_settings and site_settings.company_name %}
+        {{ site_settings.company_name|cut:" Engineering Ltd"|cut:" Ltd"|cut:" Limited" }}
+      {% else %}
+        Sultan <span>Multiforge</span>
+      {% endif %}
+    </div>
+    <div class="nav-logo-sub">
+      {% if site_settings and site_settings.company_tagline %}
+        {{ site_settings.company_tagline }}
+      {% else %}
+        Engineering Ltd
+      {% endif %}
+    </div>
+  </a>
+
+  <ul class="nav-menu">
+    <li><a href="/">Home</a></li>
+    <li><a href="/about/">About</a></li>
+    <li><a href="/services/" class="active">Services</a></li>
+    <li><a href="/projects/">Projects</a></li>
+    <li><a href="/contact/">Contact</a></li>
+  </ul>
+
+  <a href="/contact/" class="nav-cta-btn">Get Quote</a>
+
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-nav" id="mobile-nav">
+  <a href="/">Home</a>
+  <a href="/about/">About</a>
+  <a href="/services/">Services</a>
+  <a href="/projects/">Projects</a>
+  <a href="/contact/">Contact</a>
+  <a href="/contact/" class="btn btn-primary">Get Quote</a>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-grid"></div>
+  <div class="page-hero-glow"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-tag"><i class="fas fa-cogs"></i> Our Services</div>
+    <h1 class="page-title">Engineering <span>Services</span></h1>
+    <p class="breadcrumb"><a href="/">Home</a> / <span>Services</span></p>
+  </div>
+</div>
+
+<!-- SERVICES OVERVIEW GRID -->
+<section id="services-intro">
+  <div style="text-align:center" class="reveal">
+    <span class="section-label">What We Do</span>
+    <h2 class="section-title">Comprehensive Engineering <span>Solutions</span></h2>
+    <div class="section-line center"></div>
+    <p class="section-desc" style="margin:0 auto">
+      From structural design to full construction management, Sultan Multiforge delivers engineering solutions across all sectors of the built environment.
+    </p>
+  </div>
+
+  <div class="services-overview-grid">
+    <div class="svc-overview-card reveal delay-1">
+      <div class="svc-icon"><i class="fas fa-drafting-compass"></i></div>
+      <h3>Structural & Architectural Designs</h3>
+      <p>Complete structural analysis and architectural design services — from concept sketches to fully stamped drawings ready for construction approval and site use.</p>
+    </div>
+
+    <div class="svc-overview-card reveal delay-2">
+      <div class="svc-icon"><i class="fas fa-building"></i></div>
+      <h3>Building Construction (Residential & Commercial)</h3>
+      <p>Full-cycle construction of both residential and commercial buildings — from foundation works to finishing, built to code and delivered on time.</p>
+    </div>
+
+    <div class="svc-overview-card reveal delay-3">
+      <div class="svc-icon"><i class="fas fa-tasks"></i></div>
+      <h3>Site / Project Management</h3>
+      <p>End-to-end site and project management covering scheduling, contractor coordination, quality control, cost monitoring, and client reporting.</p>
+    </div>
+
+    <div class="svc-overview-card reveal delay-1">
+      <div class="svc-icon"><i class="fas fa-calculator"></i></div>
+      <h3>BOQ Estimation & Quantity Surveying</h3>
+      <p>Accurate Bills of Quantities preparation and professional quantity surveying services — giving clients reliable cost data before and during construction.</p>
+    </div>
+
+    <div class="svc-overview-card reveal delay-2">
+      <div class="svc-icon"><i class="fas fa-paint-roller"></i></div>
+      <h3>Wall Decoration</h3>
+      <p>Professional wall screening and painting services for interior and exterior surfaces — delivering clean, durable, and aesthetically refined finishes.</p>
+    </div>
+
+    <div class="svc-overview-card reveal delay-3">
+      <div class="svc-icon"><i class="fas fa-couch"></i></div>
+      <h3>Interior & Exterior Designs</h3>
+      <p>Creative interior and exterior design solutions that blend functionality with elegance — transforming spaces into professional and liveable environments.</p>
+    </div>
+
+    <div class="svc-overview-card reveal delay-1">
+      <div class="svc-icon"><i class="fas fa-truck"></i></div>
+      <h3>Construction Equipment Rentals</h3>
+      <p>Reliable rental of construction equipment and machinery — providing contractors and developers access to quality tools without the cost of ownership.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DETAILED SERVICES -->
+<section id="services-detail">
+  <div style="text-align:center;margin-bottom:4rem" class="reveal">
+    <span class="section-label">Deep Dive</span>
+    <h2 class="section-title">What Each Service <span>Includes</span></h2>
+    <div class="section-line center"></div>
+  </div>
+
+  <!-- SERVICE 1 -->
+  <div class="service-detail-block">
+    <div class="reveal-left">
+      <div class="img-placeholder svc-detail-img">
+        <img src="{% static 'images/image1.png' %}" alt="Structural & Architectural Design Image">
+      </div>
+    </div>
+    <div class="svc-detail-text reveal-right">
+      <span class="section-label">Service 01</span>
+      <h2 class="section-title">Structural & <span>Architectural Designs</span></h2>
+      <div class="section-line"></div>
+      <p>We provide comprehensive structural and architectural design services for all building types. Our licensed engineers produce detailed drawings, load calculations, and construction documents that meet regulatory requirements and are ready for immediate site use.</p>
+      <p>We use industry-standard tools including AutoCAD, ETABS, and STAAD.Pro to ensure accuracy, safety, and compliance at every level of the design process.</p>
+      <ul class="svc-benefits">
+        <li><i class="fas fa-check-circle"></i> Full structural analysis & load calculations</li>
+        <li><i class="fas fa-check-circle"></i> Architectural floor plans, elevations & sections</li>
+        <li><i class="fas fa-check-circle"></i> Foundation design (raft, strip, pile)</li>
+        <li><i class="fas fa-check-circle"></i> Reinforced concrete & steel framing designs</li>
+        <li><i class="fas fa-check-circle"></i> Regulatory approval drawing packages</li>
+        <li><i class="fas fa-check-circle"></i> 3D visualisation & render on request</li>
+      </ul>
+      <a href="/contact/" class="btn btn-primary" style="margin-top:.5rem">Request This Service <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- SERVICE 2 -->
+  <div class="service-detail-block reverse">
+    <div class="reveal-right">
+      <div class="img-placeholder svc-detail-img">
+        <img src="{% static 'images/image2.png' %}" alt="Building Construction Image">
+      </div>
+    </div>
+    <div class="svc-detail-text reveal-left">
+      <span class="section-label">Service 02</span>
+      <h2 class="section-title">Building <span>Construction</span></h2>
+      <div class="section-line"></div>
+      <p>We handle complete construction of both residential and commercial buildings. From site preparation and foundation works through to superstructure, roofing, and internal finishes — every phase is delivered to a high standard under our direct supervision.</p>
+      <ul class="svc-benefits">
+        <li><i class="fas fa-check-circle"></i> Residential buildings — bungalows, duplexes, estates</li>
+        <li><i class="fas fa-check-circle"></i> Commercial buildings — offices, shops, warehouses</li>
+        <li><i class="fas fa-check-circle"></i> Foundation & substructure works</li>
+        <li><i class="fas fa-check-circle"></i> Reinforced concrete frame construction</li>
+        <li><i class="fas fa-check-circle"></i> Roofing, block work & plastering</li>
+        <li><i class="fas fa-check-circle"></i> Complete internal & external finishing</li>
+      </ul>
+      <a href="/contact/" class="btn btn-primary" style="margin-top:.5rem">Request This Service <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- SERVICE 3 -->
+  <div class="service-detail-block">
+    <div class="reveal-left">
+      <div class="img-placeholder svc-detail-img">
+        <img src="{% static 'images/image3.png' %}" alt="Site / Project Management Image">
+      </div>
+    </div>
+    <div class="svc-detail-text reveal-right">
+      <span class="section-label">Service 03</span>
+      <h2 class="section-title">Site / Project <span>Management</span></h2>
+      <div class="section-line"></div>
+      <p>Our project management service gives clients complete peace of mind — from the first day on site to final handover. We coordinate all contractors, manage timelines, control costs, and ensure work meets specification at every stage.</p>
+      <ul class="svc-benefits">
+        <li><i class="fas fa-check-circle"></i> Full-time site supervision & quality control</li>
+        <li><i class="fas fa-check-circle"></i> Contractor procurement & management</li>
+        <li><i class="fas fa-check-circle"></i> Project scheduling & milestone tracking</li>
+        <li><i class="fas fa-check-circle"></i> Regular client progress reports</li>
+        <li><i class="fas fa-check-circle"></i> Cost monitoring & variation management</li>
+        <li><i class="fas fa-check-circle"></i> Health, safety & environmental compliance</li>
+      </ul>
+      <a href="/contact/" class="btn btn-primary" style="margin-top:.5rem">Request This Service <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- SERVICE 4 -->
+  <div class="service-detail-block reverse">
+    <div class="reveal-right">
+      <div class="img-placeholder svc-detail-img">
+        <img src="{% static 'images/image4.png' %}" alt="BOQ & Quantity Surveying Image">
+      </div>
+    </div>
+    <div class="svc-detail-text reveal-left">
+      <span class="section-label">Service 04</span>
+      <h2 class="section-title">BOQ Estimation & <span>Quantity Surveying</span></h2>
+      <div class="section-line"></div>
+      <p>Accurate cost intelligence is the foundation of any successful construction project. Our quantity surveyors prepare detailed Bills of Quantities and cost estimates that give clients clear, reliable figures before committing to construction.</p>
+      <ul class="svc-benefits">
+        <li><i class="fas fa-check-circle"></i> Detailed Bills of Quantities (BOQ) preparation</li>
+        <li><i class="fas fa-check-circle"></i> Pre-construction cost estimates & budgets</li>
+        <li><i class="fas fa-check-circle"></i> Tender pricing & contractor evaluation</li>
+        <li><i class="fas fa-check-circle"></i> Interim valuation & payment certificates</li>
+        <li><i class="fas fa-check-circle"></i> Final account preparation & settlement</li>
+        <li><i class="fas fa-check-circle"></i> Value engineering & cost optimisation</li>
+      </ul>
+      <a href="/contact/" class="btn btn-primary" style="margin-top:.5rem">Request This Service <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- SERVICE 5 -->
+  <div class="service-detail-block">
+    <div class="reveal-left">
+      <div class="img-placeholder svc-detail-img">
+        <img src="{% static 'images/image5.png' %}" alt="Wall Decoration — Screening & Painting">
+      </div>
+    </div>
+    <div class="svc-detail-text reveal-right">
+      <span class="section-label">Service 05</span>
+      <h2 class="section-title">Wall Decoration —<br><span>Screening & Painting</span></h2>
+      <div class="section-line"></div>
+      <p>Our wall decoration team delivers professional screening and painting finishes for both interior and exterior surfaces. We use quality materials and clean, precise techniques to produce finishes that are durable, beautiful, and long-lasting.</p>
+      <ul class="svc-benefits">
+        <li><i class="fas fa-check-circle"></i> Interior & exterior wall painting</li>
+        <li><i class="fas fa-check-circle"></i> Decorative screening & panelling</li>
+        <li><i class="fas fa-check-circle"></i> Surface preparation & plastering</li>
+        <li><i class="fas fa-check-circle"></i> Textured & specialty finish coatings</li>
+        <li><i class="fas fa-check-circle"></i> Colour consultation & scheme planning</li>
+        <li><i class="fas fa-check-circle"></i> Residential, commercial & industrial projects</li>
+      </ul>
+      <a href="/contact/" class="btn btn-primary" style="margin-top:.5rem">Request This Service <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- SERVICE 6 -->
+  <div class="service-detail-block reverse">
+    <div class="reveal-right">
+      <div class="img-placeholder svc-detail-img">
+        <img src="{% static 'images/image6.png' %}" alt="Interior & Exterior Designs">
+      </div>
+    </div>
+    <div class="svc-detail-text reveal-left">
+      <span class="section-label">Service 06</span>
+      <h2 class="section-title">Interior & Exterior <span>Designs</span></h2>
+      <div class="section-line"></div>
+      <p>We create thoughtfully designed interior and exterior spaces that are functional, aesthetically refined, and tailored to the client's lifestyle or brand. From space planning to material selection and finish specification, we handle every design detail.</p>
+      <ul class="svc-benefits">
+        <li><i class="fas fa-check-circle"></i> Interior space planning & layout design</li>
+        <li><i class="fas fa-check-circle"></i> Material, fixture & furniture selection</li>
+        <li><i class="fas fa-check-circle"></i> Exterior facade & landscaping design</li>
+        <li><i class="fas fa-check-circle"></i> Lighting design & ambience planning</li>
+        <li><i class="fas fa-check-circle"></i> Residential & commercial interiors</li>
+        <li><i class="fas fa-check-circle"></i> 3D renders & concept visualisations</li>
+      </ul>
+      <a href="/contact/" class="btn btn-primary" style="margin-top:.5rem">Request This Service <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+
+  <!-- SERVICE 7 -->
+  <div class="service-detail-block">
+    <div class="reveal-left">
+      <div class="img-placeholder svc-detail-img">
+        <img src="{% static 'images/image7.png' %}" alt="Construction Equipment Rentals">
+      </div>
+    </div>
+    <div class="svc-detail-text reveal-right">
+      <span class="section-label">Service 07</span>
+      <h2 class="section-title">Construction Equipment <span>Rentals</span></h2>
+      <div class="section-line"></div>
+      <p>We provide reliable rental of construction equipment and machinery to contractors, developers, and self-builders. Our equipment is well-maintained, regularly serviced, and available on flexible hire terms to match your project schedule.</p>
+      <ul class="svc-benefits">
+        <li><i class="fas fa-check-circle"></i> Excavators, mixers & compactors</li>
+        <li><i class="fas fa-check-circle"></i> Scaffolding & formwork systems</li>
+        <li><i class="fas fa-check-circle"></i> Power tools & hand equipment</li>
+        <li><i class="fas fa-check-circle"></i> Flexible short-term & long-term hire</li>
+        <li><i class="fas fa-check-circle"></i> Delivery & collection available</li>
+        <li><i class="fas fa-check-circle"></i> Operator services on request</li>
+      </ul>
+      <a href="/contact/" class="btn btn-primary" style="margin-top:.5rem">Enquire About Rental <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- WALL DECORATION & PAINTING — SWANCOAT GALLERY -->
+<section id="painting-gallery" style="background:var(--navy)">
+  <div class="reveal">
+    <span class="section-label">In Partnership with Swancoat Paint</span>
+    <h2 class="section-title">Wall Decoration & <span>Painting Works</span></h2>
+    <div class="section-line"></div>
+    <p class="section-desc" style="max-width:600px">
+      Engr. Emmanuel delivers all painting and wall decoration works using
+      <strong style="color:var(--white)">Swancoat Paint</strong> — premium quality, durable, and long-lasting.
+      These are real completed projects where Swancoat products were used.
+    </p>
+  </div>
+
+  <!-- SWANCOAT BRAND BANNER -->
+  <div class="reveal" style="
+    margin: 2.5rem 0;
+    background: linear-gradient(135deg, #0a1628 0%, #0d2040 100%);
+    border: 1px solid rgba(201,168,76,.2);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  ">
+    <div style="
+      background: linear-gradient(135deg, #e8f4f8, #c8e6f0);
+      border-radius: var(--radius); padding: .75rem 1.25rem;
+      display: flex; flex-direction: column; align-items: center; gap: .2rem;
+      font-family: 'Montserrat', sans-serif; flex-shrink: 0;
+    ">
+      <div style="font-size:.75rem;font-weight:900;letter-spacing:3px;color:#1a5276;text-transform:uppercase">SWANCOAT</div>
+      <div style="font-size:.55rem;font-weight:700;letter-spacing:2px;color:#2980b9;text-transform:uppercase">PAINT LTD</div>
+      <div style="width:44px;height:2px;background:linear-gradient(90deg,#2980b9,#1abc9c);border-radius:1px;margin-top:.2rem"></div>
+    </div>
+    <div>
+      <div style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.3rem">
+        Official Paint Partner
+      </div>
+      <p style="font-size:.9rem;color:var(--light);margin:0">
+        <em style="font-style:normal;font-weight:600;color:var(--white)">"Affordable, Durable, Reliable"</em>
+        — Swancoat Paint delivers premium wall finishes used on all Sultan Multiforge decoration projects.
+      </p>
+    </div>
+  </div>
+
+  <!-- PAINTING PHOTO GALLERY -->
+  <div class="painting-grid reveal">
+    <div class="paint-card paint-card-featured">
+      <img src="{% static 'images/painting/paint2.png' %}"
+           alt="Exterior painting — bold red residential duplex"
+           onerror="this.parentElement.querySelector('.paint-fallback').style.display='flex';this.style.display='none'">
+      <div class="paint-fallback"><i class="fas fa-paint-roller"></i></div>
+      <div class="paint-overlay">
+        <div class="paint-tag">Exterior Painting</div>
+        <p class="paint-caption">Bold red exterior finish — residential duplex</p>
+        <span class="paint-brand"><i class="fas fa-circle" style="font-size:.4rem"></i> Swancoat Paint</span>
+      </div>
+    </div>
+
+    <div class="paint-card">
+      <img src="{% static 'images/painting/paint1.png' %}"
+           alt="Exterior painting — white and grey apartment block"
+           onerror="this.parentElement.querySelector('.paint-fallback').style.display='flex';this.style.display='none'">
+      <div class="paint-fallback"><i class="fas fa-paint-roller"></i></div>
+      <div class="paint-overlay">
+        <div class="paint-tag">Exterior Painting</div>
+        <p class="paint-caption">White & charcoal grey apartment block finish</p>
+        <span class="paint-brand"><i class="fas fa-circle" style="font-size:.4rem"></i> Swancoat Paint</span>
+      </div>
+    </div>
+
+    <div class="paint-card">
+      <img src="{% static 'images/painting/paint3.png' %}"
+           alt="Exterior wall painting — smooth salmon finish"
+           onerror="this.parentElement.querySelector('.paint-fallback').style.display='flex';this.style.display='none'">
+      <div class="paint-fallback"><i class="fas fa-paint-roller"></i></div>
+      <div class="paint-overlay">
+        <div class="paint-tag">Exterior Coating</div>
+        <p class="paint-caption">Smooth exterior wall coating with window trims</p>
+        <span class="paint-brand"><i class="fas fa-circle" style="font-size:.4rem"></i> Swancoat Paint</span>
+      </div>
+    </div>
+
+    <div class="paint-card">
+      <img src="{% static 'images/painting/paint4.png' %}"
+           alt="Full building exterior painting — apartment block"
+           onerror="this.parentElement.querySelector('.paint-fallback').style.display='flex';this.style.display='none'">
+      <div class="paint-fallback"><i class="fas fa-paint-roller"></i></div>
+      <div class="paint-overlay">
+        <div class="paint-tag">Full Exterior Finish</div>
+        <p class="paint-caption">Multi-storey apartment block — cream exterior finish</p>
+        <span class="paint-brand"><i class="fas fa-circle" style="font-size:.4rem"></i> Swancoat Paint</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DECORATION SERVICES LIST -->
+  <div class="reveal" style="margin-top: 3rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;" id="deco-services-grid">
+    <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+      <div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius);background:var(--gold-dim);border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem">
+        <i class="fas fa-paint-roller"></i>
+      </div>
+      <div>
+        <h4 style="margin-bottom:.4rem;font-size:.95rem">Exterior Painting</h4>
+        <p style="font-size:.84rem;color:var(--mid);line-height:1.75">Full exterior wall painting and coating using Swancoat premium products for lasting protection and colour.</p>
+      </div>
+    </div>
+
+    <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+      <div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius);background:var(--gold-dim);border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem">
+        <i class="fas fa-brush"></i>
+      </div>
+      <div>
+        <h4 style="margin-bottom:.4rem;font-size:.95rem">Interior Painting</h4>
+        <p style="font-size:.84rem;color:var(--mid);line-height:1.75">Clean, smooth interior wall painting with Swancoat emulsion — ceilings, feature walls, and full room finishes.</p>
+      </div>
+    </div>
+
+    <div class="card" style="display:flex;gap:1rem;align-items:flex-start">
+      <div style="width:44px;height:44px;flex-shrink:0;border-radius:var(--radius);background:var(--gold-dim);border:1px solid var(--border-gold);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:1.1rem">
+        <i class="fas fa-border-all"></i>
+      </div>
+      <div>
+        <h4 style="margin-bottom:.4rem;font-size:.95rem">Screening & Texturing</h4>
+        <p style="font-size:.84rem;color:var(--mid);line-height:1.75">Decorative wall screening and textured finishes — adding character and depth to walls both inside and outside.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:2.5rem" class="reveal">
+    <a href="/contact/" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Get a Painting Quote</a>
+  </div>
+</section>
+
+<!-- WORK PROCESS -->
+<section id="process">
+  <div style="text-align:center" class="reveal">
+    <span class="section-label">How We Work</span>
+    <h2 class="section-title">Our Work <span>Process</span></h2>
+    <div class="section-line center"></div>
+    <p class="section-desc" style="margin:0 auto">Every project follows a disciplined, transparent workflow that keeps clients informed and quality high at every stage.</p>
+  </div>
+
+  <div class="process-steps">
+    <div class="process-step reveal delay-1">
+      <div class="step-circle"><span class="step-num">01</span></div>
+      <h4>Initial Consultation</h4>
+      <p>We listen carefully to understand your project scope, goals, site conditions, and budget expectations.</p>
+    </div>
+
+    <div class="process-step reveal delay-2">
+      <div class="step-circle"><span class="step-num">02</span></div>
+      <h4>Design & Estimation</h4>
+      <p>Our engineers produce detailed designs, BOQ, and cost estimates for your review and approval.</p>
+    </div>
+
+    <div class="process-step reveal delay-3">
+      <div class="step-circle"><span class="step-num">03</span></div>
+      <h4>Approval & Mobilisation</h4>
+      <p>We handle necessary approvals, procure materials, and mobilise our team to site.</p>
+    </div>
+
+    <div class="process-step reveal delay-4">
+      <div class="step-circle"><span class="step-num">04</span></div>
+      <h4>Construction & Handover</h4>
+      <p>Supervised construction with quality checks at every milestone, followed by full client handover.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="services-cta">
+  <div style="position:relative;z-index:2;max-width:600px;margin:0 auto" class="reveal">
+    <span class="section-label">Get Started</span>
+    <h2 class="section-title">Ready to Start Your <span>Project?</span></h2>
+    <div class="section-line center"></div>
+    <p class="section-desc" style="margin:0 auto 2.5rem">Contact us today for a free consultation and professional cost estimate tailored to your specific needs.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <a href="/contact/" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Get a Free Quote</a>
+      <a href="/projects/" class="btn btn-outline"><i class="fas fa-th-large"></i> View Our Projects</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo-name">
+        {% if site_settings and site_settings.company_name %}
+          {{ site_settings.company_name }}
+        {% else %}
+          Sultan Multiforge Engineering Ltd
+        {% endif %}
+      </div>
+
+      <div class="footer-logo-sub">
+        {% if site_settings and site_settings.company_tagline %}
+          {{ site_settings.company_tagline }}
+        {% else %}
+          Engineering Ltd
+        {% endif %}
+      </div>
+
+      <p class="footer-desc">
+        {% if site_settings and site_settings.footer_text %}
+          {{ site_settings.footer_text }}
+        {% else %}
+          Professional engineering and construction solutions for residential and commercial projects in Nsukka, Enugu State and beyond.
+        {% endif %}
+      </p>
+
+      <div class="footer-social">
+        {% if site_settings and site_settings.facebook_link %}
+          <a href="{{ site_settings.facebook_link }}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        {% endif %}
+
+        {% if site_settings and site_settings.linkedin_link %}
+          <a href="{{ site_settings.linkedin_link }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+        {% endif %}
+
+        {% if site_settings and site_settings.instagram_link %}
+          <a href="{{ site_settings.instagram_link }}" target="_blank"><i class="fab fa-instagram"></i></a>
+        {% endif %}
+
+        {% if site_settings and site_settings.twitter_link %}
+          <a href="{{ site_settings.twitter_link }}" target="_blank"><i class="fab fa-twitter"></i></a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="/"><i class="fas fa-chevron-right"></i> Home</a></li>
+        <li><a href="/about/"><i class="fas fa-chevron-right"></i> About Us</a></li>
+        <li><a href="/services/"><i class="fas fa-chevron-right"></i> Services</a></li>
+        <li><a href="/projects/"><i class="fas fa-chevron-right"></i> Projects</a></li>
+        <li><a href="/contact/"><i class="fas fa-chevron-right"></i> Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Our Services</h4>
+      <ul>
+        <li><a href="/services/"><i class="fas fa-chevron-right"></i> Structural & Architectural Designs</a></li>
+        <li><a href="/services/"><i class="fas fa-chevron-right"></i> Building Construction (Residential & Commercial)</a></li>
+        <li><a href="/services/"><i class="fas fa-chevron-right"></i> Site / Project Management</a></li>
+        <li><a href="/services/"><i class="fas fa-chevron-right"></i> BOQ & Quantity Surveying</a></li>
+        <li><a href="/services/"><i class="fas fa-chevron-right"></i> Interior & Exterior Designs</a></li>
+        <li><a href="/services/"><i class="fas fa-chevron-right"></i> Equipment Rentals</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>Contact Info</h4>
+
+      {% if site_settings and site_settings.address %}
+        <div class="footer-contact-line"><i class="fas fa-map-marker-alt"></i> {{ site_settings.address }}</div>
+      {% endif %}
+
+      {% if site_settings and site_settings.phone_1 %}
+        <div class="footer-contact-line"><i class="fas fa-phone"></i> {{ site_settings.phone_1 }}</div>
+      {% endif %}
+
+      {% if site_settings and site_settings.phone_2 %}
+        <div class="footer-contact-line"><i class="fas fa-phone"></i> {{ site_settings.phone_2 }}</div>
+      {% endif %}
+
+      {% if site_settings and site_settings.email %}
+        <div class="footer-contact-line"><i class="fas fa-envelope"></i> {{ site_settings.email }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-copy">
+      © 2025
+      {% if site_settings and site_settings.company_name %}
+        {{ site_settings.company_name }}
+      {% else %}
+        Sultan Multiforge Engineering Ltd
+      {% endif %}.
+      All rights reserved.
+    </p>
+
+    <div class="footer-bottom-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
