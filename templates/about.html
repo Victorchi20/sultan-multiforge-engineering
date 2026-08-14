@@ -186,9 +186,11 @@
 <nav id="navbar">
   <a href="/" class="nav-logo">
     <div class="nav-logo-name">
-      {{ site_settings.company_name|default:"Sultan Multiforge Engineering Ltd"|cut:" Engineering Ltd" }}
+      {{ site_settings.company_name|default:"Sultan Multiforge" }}
     </div>
-    <div class="nav-logo-sub">Engineering Ltd</div>
+    <div class="nav-logo-sub">
+      {{ site_settings.company_tagline|default:"Engineering Ltd" }}
+    </div>
   </a>
 
   <ul class="nav-menu">

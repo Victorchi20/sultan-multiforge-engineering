@@ -217,18 +217,10 @@
 <nav id="navbar">
   <a href="/" class="nav-logo">
     <div class="nav-logo-name">
-      {% if site_settings and site_settings.company_name %}
-        {{ site_settings.company_name|cut:" Engineering Ltd"|cut:" Ltd"|cut:" Limited" }}
-      {% else %}
-        Sultan <span>Multiforge</span>
-      {% endif %}
+      {{ site_settings.company_name|default:"Sultan Multiforge" }}
     </div>
     <div class="nav-logo-sub">
-      {% if site_settings and site_settings.company_tagline %}
-        {{ site_settings.company_tagline }}
-      {% else %}
-        Engineering Ltd
-      {% endif %}
+      {{ site_settings.company_tagline|default:"Engineering Ltd" }}
     </div>
   </a>
 
