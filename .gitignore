@@ -12,9 +12,13 @@ env/
 db.sqlite3
 staticfiles/
 
+# Database export
+data.json
+
 # Environment variables / secrets
 .env
 .env.*
+!.env.example
 
 # User uploaded media
 media/
