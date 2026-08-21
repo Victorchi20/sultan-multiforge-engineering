@@ -27,6 +27,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'cloudinary',
+    'cloudinary_storage',
+
     'core',
 ]
 
@@ -128,3 +131,13 @@ EMAIL_HOST_USER = 'emmanueleya1998@gmail.com'
 EMAIL_HOST_PASSWORD = '------'
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Cloudinary media storage
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
